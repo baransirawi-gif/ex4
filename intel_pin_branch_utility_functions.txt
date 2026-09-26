@@ -1,0 +1,37 @@
+BOOL INS_IsIndirectBranchOrCall(INS ins)
+{
+    return  INS_IsBranchOrCall(ins) && !INS_IsDirectBranchOrCall(ins);
+}
+
+BOOL INS_IsBranchOrCall(INS ins)
+{
+    if (INS_IsSyscall(ins))
+    {
+        return INS_SyscallIsTakenBranch(ins);
+    }
+
+    xed_decoded_inst_t* xedd = INS_xed_dec(ins);
+    switch( xed_decoded_inst_get_category(xedd) )
+    {
+      case XED_CATEGORY_RET:
+      case XED_CATEGORY_CALL:
+      case XED_CATEGORY_COND_BR:
+      case XED_CATEGORY_UNCOND_BR:
+        return true;
+      default:
+        return false;
+    }
+}
+
+BOOL INS_IsDirectBranchOrCall(INS ins)
+{
+    if ( INS_IsBranchOrCall(ins) )
+        if (!INS_IsFarJump(ins) && !INS_IsFarCall(ins)) {
+            // Looking for relative branches or calls. So they must have a
+            // displacement and that displacement must not be for the memory
+            // operation.
+            xed_operand_values_t* xedv = INS_xed_operand_values(ins);
+            return xed_operand_values_has_branch_displacement(xedv);
+        }
+    return false;
+}

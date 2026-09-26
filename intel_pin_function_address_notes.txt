@@ -1,0 +1,9 @@
+How to obtain addresses of C/C++ routines in the pintool code:
+
+The following code prints the address of the C/C++ function foo() 
+
+void foo() {...}
+
+void main() {  printf(" foo() addr: 0x%x\n",  (ADDRINT *)foo); }
+
+The above code is useful in order to obtain the addresses of the instrumentation functions that detect memory overflow.
