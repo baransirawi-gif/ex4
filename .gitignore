@@ -1,0 +1,8 @@
+# Benchmarks and inputs are large; keep them out of git.
+bench/
+.ref/
+failures/
+results*.csv
+obj-intel64/
+baseline/obj-intel64/
+bprofile.out
